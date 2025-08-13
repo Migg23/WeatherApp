@@ -43,6 +43,7 @@ def index():
     
     return "completed dictionary for temp / time"
 
+
 @app.route("/temp-time")
 def cur_temp_time():
     timezone = loc_reponse.Timezone().decode("utf-8")
@@ -50,13 +51,16 @@ def cur_temp_time():
     hours_since_start = int((the_utc - start_time).total_seconds() / hourly.Interval())
 
     #starter want to make it return state of weather and change this method to one section
-    temp_time = {"tempature" : temps[hours_since_start] , "time" : current_time , "timezone" : timezone }
+    temp_time = {"temperature" : int(temps[hours_since_start]) , "time" : current_time , "timezone" : timezone }
+    
 
-    return str(temp_time)
+
+    return jsonify(temp_time)
 
 
 
 #this method should access the next couple of days of weather and provide the lowest/highest temps 
+@app.route("/upcoming-weather")
 def upcoming_weather():
     
     return ""
