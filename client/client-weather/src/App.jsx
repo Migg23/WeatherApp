@@ -4,11 +4,17 @@ import viteLogo from '/vite.svg'
 
 import TempDisplay from './components/TemperatureDisplay'
 
+import HourlyDisplay from './components/HourlyTempDisplay'
+
 function App() {
   const [count, setCount] = useState(0)
 
   return (
-    <TempDisplay/>
+    <div>
+      <TempDisplay/>
+      <HourlyDisplay/>
+    </div>
+    
   )
 }
 

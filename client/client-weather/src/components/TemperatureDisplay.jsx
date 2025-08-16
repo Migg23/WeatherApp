@@ -10,23 +10,27 @@ function TemperatureDisplay(){
     
 
 
-    const getTemperature = async () =>{
-        try{
-            const response = await fetch('http://localhost:5000/temp-time');
+    
 
-            const data = await response.json();
+    useEffect(()=>{
+        const getTemperature = async () =>{
+            try{
+                const response = await fetch('http://localhost:5000/temp-time');
 
-            setTemper(data.temperature);
-            setTime(data.time);
-            setTimeZn(data.timezone);
+                const data = await response.json();
+
+                setTemper(data.temperature);
+                setTime(data.time);
+                setTimeZn(data.timezone);
+            }
+            catch(ex){
+                alert("Cannot get information twin: " + ex );
+            }
         }
-        catch(ex){
-            alert("Cannot get information" )
-        }
-        
 
-        
-    }
+        getTemperature();
+
+    })
     
     return(
         <div>

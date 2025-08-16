@@ -4,7 +4,7 @@ import pandas as pd
 import requests_cache
 from datetime import datetime , timezone
 from retry_requests import retry
-
+from flask_cors import CORS , cross_origin
 
 
 #from the meteo API that ensures the api is works and retries on errors
@@ -24,8 +24,13 @@ params = {
 }
 responses = openmeteo.weather_api(base_url, params=params)
 loc_reponse = responses[0]
+
+#all the hourly times
 hourly = loc_reponse.Hourly()
+
 start_time = datetime.fromtimestamp(hourly.Time() , tz=timezone.utc)
+
+
 temps = hourly.Variables(0).ValuesAsNumpy()
 interval = hourly.Interval()
 the_utc = datetime.now(timezone.utc)
@@ -35,16 +40,27 @@ the_utc = datetime.now(timezone.utc)
 
 app = Flask(__name__)
 
+CORS(app, resources={r"/*": {"origins": ["http://localhost:5173", "http://localhost:3000"]}})
 
 
 
+#this will be the method that gives us the hourly for the next 8 hours
 @app.route("/index")
 def index():
+    current_hour = int((the_utc - start_time).total_seconds()/hourly.Interval())
+
     
-    return "completed dictionary for temp / time"
+    hourly_temps = [int(temps[current_hour])]
+
+    for i in range(7):
+        hourly_temps.append(int(temps[current_hour + (i + 1)]))
+
+    
+    return hourly_temps
 
 
 @app.route("/temp-time")
+@cross_origin(origin="http://localhost:5173")
 def cur_temp_time():
     timezone = loc_reponse.Timezone().decode("utf-8")
     current_time = datetime.now()
