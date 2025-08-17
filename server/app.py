@@ -78,8 +78,34 @@ def cur_temp_time():
 #this method should access the next couple of days of weather and provide the lowest/highest temps 
 @app.route("/upcoming-weather")
 def upcoming_weather():
-    
-    return ""
+    day_to_skip = 24    
+    cur_skip = 1
+
+    goal = {"dayOne": [] , "dayTwo" : [] , "dayThree" : []}
+
+    while cur_skip <= 3:
+        all_temps_for_day = []
+        first_last_temp = []
+        for i in range(24):
+            all_temps_for_day.append(int(temps[i + day_to_skip]))
+
+        all_temps_for_day.sort()
+
+        first_last_temp.append(all_temps_for_day[0])
+        first_last_temp.append(all_temps_for_day[23])
+
+
+        if cur_skip == 1:
+            goal["dayOne"] = first_last_temp
+        elif cur_skip == 2:
+            goal["dayTwo"] = first_last_temp
+        else:
+            goal["dayThree"] = first_last_temp
+
+        cur_skip += 1
+        day_to_skip += 24
+
+    return jsonify(goal)
     
 
 if __name__ == "__main__":
